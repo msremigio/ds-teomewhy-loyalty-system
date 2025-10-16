@@ -30,6 +30,6 @@ reference_dates = pd.read_sql(reference_dates_query, con=app_engine)
 for date in reference_dates['DtRef'].to_list()[:-1]:
     df_lifecycle = pd.read_sql(lifecycle_query.format(date=date), con=app_engine)
 
-    df_lifecycle.to_sql('clients_lifecycle', con=analytical_engine, if_exists='append')
-    
+    df_lifecycle.to_sql('clients_lifecycle', con=analytical_engine, index=False, if_exists='append')
+
 # %%
