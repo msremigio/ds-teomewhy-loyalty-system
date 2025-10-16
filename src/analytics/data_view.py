@@ -25,11 +25,11 @@ mau_query = read_query('mau.sql')
 mau_28days_query = read_query('mau_28days.sql')
 
 # %%
-engine = create_engine(f"sqlite:///{DATA_DIR}/database_loyalty_system.db")
+app_engine = create_engine(f"sqlite:///{DATA_DIR}/database_loyalty_system.db")
 
-dau = pd.read_sql(dau_query, con=engine)
-mau = pd.read_sql(mau_query, con=engine)
-mau_28days = pd.read_sql(mau_28days_query, con=engine)
+dau = pd.read_sql(dau_query, con=app_engine)
+mau = pd.read_sql(mau_query, con=app_engine)
+mau_28days = pd.read_sql(mau_28days_query, con=app_engine)
 
 # %%
 fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(20,15))
@@ -50,6 +50,3 @@ ax3.set_ylabel('Distinct Users')
 ax3.set_xticks(ax3.get_xticks()[::50])
 
 plt.savefig("active_users_analytics.png")
-
-
-# %%

@@ -16,14 +16,16 @@ SELECT DISTINCT
     ,"IdCliente" AS "ClientId"
 FROM
     transacoes
+WHERE
+    date("DtCriacao") BETWEEN date('2025-08-31', '-27 days') AND date('2025-08-31')
 ),
 "ClientsFirstAndLastInteractions" AS(
 SELECT
     "ClientId"
     ,MIN("DtDay") AS "DtFirstInteraction"
-    ,(julianday(date()) - julianday(MIN("DtDay"))) AS "DaysSinceFirstInteraction"
+    ,(julianday('2025-08-31') - julianday(MIN("DtDay"))) AS "DaysSinceFirstInteraction"
     ,MAX("DtDay") AS "DtLastInteraction"
-    ,(julianday(date()) - julianday(MAX("DtDay"))) AS "DaysSinceLastInteraction"
+    ,(julianday('2025-08-31') - julianday(MAX("DtDay"))) AS "DaysSinceLastInteraction"
 FROM
     "DailyInteractions"
 GROUP BY
@@ -42,7 +44,7 @@ SELECT
     "ClientId"
     ,"RnInteraction"
     ,"DtDay" AS "DtSecondToLastInteraction"
-    ,(julianday(date()) - julianday("DtDay")) AS "DaysSinceSecondToLastInteraction"
+    ,(julianday('2025-08-31') - julianday("DtDay")) AS "DaysSinceSecondToLastInteraction"
 FROM
     "ClientsOrderedInteractions"
 WHERE
@@ -55,6 +57,8 @@ SELECT
     ,SUM("QtdePontos") FILTER (WHERE "QtdePontos" > 0) AS "Value"
 FROM
     transacoes
+WHERE
+    date("DtCriacao") BETWEEN date('2025-08-31', '-27 days') AND date('2025-08-31')
 GROUP BY
     1
 ),
@@ -73,11 +77,11 @@ LEFT JOIN "ClietsFrequencyAndValue" ON("ClientsFirstAndLastInteractions"."Client
 )
 SELECT
     "ClientId"
-    ,"DaysSinceFirstInteraction"
-    ,"DaysSinceLastInteraction"
-    ,"DaysSinceSecondToLastInteraction"
+    ,"DaysSinceLastInteraction" AS "Recency"
     ,"Frequency"
     ,"Value"
+    ,"DaysSinceFirstInteraction"
+    ,"DaysSinceSecondToLastInteraction"
     ,(CASE 
         WHEN ("DaysSinceFirstInteraction" < 7) THEN '01-CURIOUS'
         WHEN ("DaysSinceLastInteraction" < 7) AND ("DaysSinceSecondToLastInteraction" - "DaysSinceLastInteraction" < 15) THEN '02-LOYAL'
