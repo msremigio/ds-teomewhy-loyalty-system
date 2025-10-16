@@ -175,8 +175,4 @@ cython_debug/
 .pypirc
 
 # Extra files
-data/olist.sqlite
-sql_data_preparation/tb_teste.sql
-features_store/test.sql
-abt/features_n_flag.sql
-abt/test.sql
+src/analytics/tests.sql

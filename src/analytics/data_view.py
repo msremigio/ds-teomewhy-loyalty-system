@@ -49,7 +49,7 @@ ax3.set_title('MAU (28 days)')
 ax3.set_ylabel('Distinct Users')
 ax3.set_xticks(ax3.get_xticks()[::50])
 
-plt.savefig("analytics.png")
+plt.savefig("active_users_analytics.png")
 
 
 # %%
