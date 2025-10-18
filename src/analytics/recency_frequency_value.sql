@@ -9,6 +9,17 @@
 02-AWAKENED --> (DaysSinceLastInteraction < 7 AND DaysSinceSecondToLastInteraction >= 28) ///////// Started to interact coming from 05-ASLEEP
 */
 
+-- CUSTOMER FREQUENCY VALUE CLUSTERS
+/*
+01-VOLATILE --> (Frequency <= 5 AND Value <= 500)
+02-LURKER --> (Frequency > 5 AND Value <= 500)
+03-HESITANT --> (Frequency < 8 AND Value > 500)
+04-PUPIL --> (8 <= Frequency <= 15 AND Value > 500)
+05-SUPPORTER --> (Frequency > 15 AND Value > 500)
+06-HYPEBEAST --> (Frequency <= 15 AND Value >= 1500)
+07-FANATIC --> (Frequency > 15 AND Value >= 1500)
+*/
+
 WITH
 "DailyInteractions" AS(
 SELECT DISTINCT
@@ -91,5 +102,14 @@ SELECT
         WHEN ("DaysSinceLastInteraction" < 7) AND ("DaysSinceSecondToLastInteraction" - "DaysSinceLastInteraction" BETWEEN 15 AND 27) THEN '02-OVERCOMER'
         WHEN ("DaysSinceLastInteraction" < 7) AND ("DaysSinceSecondToLastInteraction" - "DaysSinceLastInteraction" >= 28) THEN '02-AWAKENED'
     END) AS "LifeCycleStage"
+    ,(CASE 
+        WHEN "Frequency" > 15 AND "Value" >= 1500 THEN '21-FANATIC' 
+        WHEN "Frequency" > 15 AND "Value" > 500 THEN '20-SUPPORTER' 
+        WHEN "Frequency" > 5 AND "Value" <= 500 THEN '11-LURKER'
+        WHEN "Frequency" <= 15 AND "Value" >= 1500 THEN '10-HYPEBEAST'  
+        WHEN "Frequency" < 8 AND "Value" > 500 THEN '02-HESITANT' 
+        WHEN "Frequency" <= 5 AND "Value" <= 500 THEN '01-VOLATILE'
+        WHEN ("Frequency" BETWEEN 8 AND 15) AND "Value" > 500 THEN '12-PUPIL'     
+    END) AS "FrequencyValueCluster"
 FROM
     "ClientsInteractionsMetrics";

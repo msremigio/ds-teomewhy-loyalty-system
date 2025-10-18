@@ -66,21 +66,15 @@ centroid_x = centroids[:,0]
 centroid_y = centroids[:,1]
 
 # %%
-plt.scatter('Frequency', 'Value', data=df_rfv)
-plt.title("Frequency x Value")
-plt.xlabel('Frequency')
-plt.ylabel('Value')
-plt.legend()
-plt.show()
-
-# %%
 fig,ax = plt.subplots(figsize=(15,10))
+
 sns.scatterplot(data=df_rfv,
                 x='Frequency', y='Value',
                 ax=ax,
                 hue='FrequencyValueCluster', 
                 style='FrequencyValueCluster', 
                 palette='deep')
+
 sns.scatterplot(x=centroid_x, y=centroid_y, 
                 ax=ax, 
                 hue=df_rfv['FrequencyValueCluster'].sort_values().unique(), 
@@ -88,6 +82,27 @@ sns.scatterplot(x=centroid_x, y=centroid_y,
                 s=500,
                 palette='deep', 
                 legend=False)
-ax.set_title('Cluster Groups')
+
 sns.move_legend(ax, 'upper left', bbox_to_anchor=(1,1), ncol=1, title='Cluster', frameon=True)
+
+""" 
+Low Frequency (f <= 5):
+- Low Value (v <= 500)
+- Medium Value (500 < v <= 1500)
+- High Value (v > 1500)
+Medium Frequency (5 < f <= 15):
+- Medium Value (500 < v <= 1500)
+High Frequency (f > 15):
+- Medium Value (500 < v <= 1500)
+- High Value (v > 1500)
+"""
+
+ax.hlines(y=[500, 1500], xmin=[0, 0], xmax=[28, 28], linestyles='dotted', colors='k')
+ax.vlines(x=[5, 8, 15], ymin=[0, 500, 500], ymax=[500, 1500, 3000], linestyles='dotted', colors='k')
+
+ax.set_title('Cluster Groups')
+ax.grid()
 plt.savefig('frequency_value_clusters.png')
+
+# %%
+
