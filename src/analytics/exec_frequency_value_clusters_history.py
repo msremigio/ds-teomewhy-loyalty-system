@@ -17,7 +17,7 @@ def read_query(query_file: str) -> str:
     return query
 
 # %%
-lifecycle_query = read_query('life_cycle_parameterized.sql')
+frequency_value_clusters_query = read_query('frequency_value_clusters_parameterized.sql')
 reference_dates_query = read_query('reference_dates.sql')
 
 # %%
@@ -28,11 +28,11 @@ analytical_engine = create_engine(f"sqlite:///{DATA_DIR}/database_analytical.db"
 reference_dates = pd.read_sql(reference_dates_query, con=app_engine)
 
 for date in reference_dates['DtRef'].to_list()[:-1]:
-    df_lifecycle = pd.read_sql(lifecycle_query.format(date=date), con=app_engine)
+    df_lifecycle = pd.read_sql(frequency_value_clusters_query.format(date=date), con=app_engine)
 
     with analytical_engine.begin() as connection:
         try:
-            connection.execute(text(f"DELETE FROM clients_lifecycle WHERE DtRef = '{date}'"))
-            df_lifecycle.to_sql('clients_lifecycle', con=connection, index=False, if_exists='append')
+            connection.execute(text(f"DELETE FROM clients_fv_clusters WHERE DtRef = '{date}'"))
+            df_lifecycle.to_sql('clients_fv_clusters', con=connection, index=False, if_exists='append')
         except:
             connection.rollback()
