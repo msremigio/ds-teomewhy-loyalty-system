@@ -39,8 +39,20 @@ FROM
     "DailyTransactions"    
 GROUP BY
     "ClientId"
+),
+"ClientsProportionalMetrics" AS (
+SELECT
+    *
+    ,(CAST("LifetimeQtyTransactions" AS FLOAT)/"LifetimeFrequency") AS "LifeTimeDailyTransactionsAvg"
+    ,COALESCE(CAST("Past7DaysQtyTransactions" AS FLOAT)/"Past7DaysFrequency", 0) AS "Past7DaysTransactionsAvg"
+    ,COALESCE(CAST("Past14DaysQtyTransactions" AS FLOAT)/"Past14DaysFrequency", 0) AS "Past14DaysTransactionsAvg"
+    ,COALESCE(CAST("Past28DaysQtyTransactions" AS FLOAT)/"Past28DaysFrequency", 0) AS "Past28DaysTransactionsAvg"
+    ,COALESCE(CAST("Past56DaysQtyTransactions" AS FLOAT)/"Past56DaysFrequency", 0) AS "Past56DaysTransactionsAvg"
+    ,COALESCE("Past28DaysFrequency"/28.0, 0) AS "Past28DaysFrequencyAvg"
+FROM
+    "ClientsAggMetrics"
 )
 SELECT
     *
 FROM
-    "ClientsAggMetrics";
+    "ClientsProportionalMetrics";
